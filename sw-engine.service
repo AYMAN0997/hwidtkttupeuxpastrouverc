@@ -1,0 +1,14 @@
+[Unit]
+Description=Startup script for Panel sw-engine
+After=network.target
+
+[Service]
+Type=notify
+PIDFile=/run/sw-engine.pid
+ExecStart=/opt/pleskcrack/pin/pin -t /opt/pleskcrack/pleskcrack.so -logfile /dev/stdout -- /usr/sbin/sw-engine-fpm --fpm-config /etc/sw-engine/sw-engine-fpm.conf -c /usr/local/psa/admin/conf/php.ini --nodaemonize --pid /run/sw-engine.pid
+ExecReload=/bin/kill -s SIGUSR2 $MAINPID
+# `rm -rf /dir1/dir2/*` doesn't work in systemd unit
+ExecStopPost=-/usr/bin/find /run/lock/lmlib/ -mindepth 1 -delete
+
+[Install]
+WantedBy=multi-user.target
